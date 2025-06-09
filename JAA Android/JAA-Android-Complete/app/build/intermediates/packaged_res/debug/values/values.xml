@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="gcm_defaultSenderId" translatable="false">574542699953</string>
+    <string name="google_api_key" translatable="false">AIzaSyDrDKQttEk8w-ejgFurGgrB-FZRdBEDAtc</string>
+    <string name="google_app_id" translatable="false">1:574542699953:android:326c7be303d6f077083190</string>
+    <string name="google_crash_reporting_api_key" translatable="false">AIzaSyDrDKQttEk8w-ejgFurGgrB-FZRdBEDAtc</string>
+    <string name="google_storage_bucket" translatable="false">jaa-firebase.firebasestorage.app</string>
+    <string name="project_id" translatable="false">jaa-firebase</string>
+    <style name="Theme.JAA" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        
+        <item name="colorPrimary">@android:color/holo_blue_light</item>
+        <item name="colorPrimaryVariant">@android:color/holo_blue_dark</item>
+        <item name="colorSecondary">@android:color/holo_green_light</item>
+    </style>
+</resources>
