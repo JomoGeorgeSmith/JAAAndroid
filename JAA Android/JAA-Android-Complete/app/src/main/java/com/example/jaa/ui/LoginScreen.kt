@@ -16,6 +16,8 @@ import com.google.firebase.messaging.FirebaseMessaging
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import android.content.Context
+
 
 @Composable
 fun LoginScreen(
@@ -72,6 +74,10 @@ fun LoginScreen(
                                 val customerId = response.body()?.vehicles?.firstOrNull()?.customerId
 
                                 if (customerId != null) {
+                                    // Save email to SharedPreferences
+                                    val prefs = context.getSharedPreferences("auth_prefs", Context.MODE_PRIVATE)
+                                    prefs.edit().putString("user_email", email).apply()
+
                                     FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
                                         if (task.isSuccessful) {
                                             val token = task.result

@@ -14,11 +14,15 @@ import androidx.navigation.compose.*
 import com.example.jaa.model.Vehicle
 import com.example.jaa.ui.*
 import com.example.jaa.ui.theme.JAATheme
+import android.content.Context
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         checkAndRequestNotificationPermission()
+
+        val prefs = getSharedPreferences("auth_prefs", Context.MODE_PRIVATE)
+        val savedEmail = prefs.getString("user_email", null)
 
         setContent {
             JAATheme {
@@ -27,7 +31,7 @@ class MainActivity : ComponentActivity() {
                 val emailState = remember { mutableStateOf("") }
                 val customerIdState = remember { mutableStateOf<Int?>(null) }
 
-                var initialRoute by remember { mutableStateOf("login") }
+                var initialRoute by remember { mutableStateOf(if (savedEmail != null) "vehicles" else "login") }
 
                 // Handle initial intent (cold start)
                 val targetScreen = intent?.getStringExtra("navigate_to")
