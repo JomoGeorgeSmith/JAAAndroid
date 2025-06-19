@@ -1,6 +1,9 @@
 package com.example.jaa.network
 
 import com.example.jaa.model.AuthResponse
+
+import com.example.jaa.model.VehiclesResponse
+
 import  com.example.jaa.model.SchedulePickupRequest
 import retrofit2.Call
 import retrofit2.http.*
@@ -8,6 +11,9 @@ import retrofit2.http.*
 interface ApiService {
     @POST("authenticate")
     fun authenticateUser(@Body credentials: Map<String, String>): Call<AuthResponse>
+
+    @GET("vehicles")
+    fun getVehiclesByEmail(@Query("email") email: String): Call<VehiclesResponse>
 
     @POST("updateToken")
     fun updateToken(@Body tokenUpdate: Map<String, String>): Call<Void>
@@ -18,3 +24,4 @@ interface ApiService {
 
 
 }
+

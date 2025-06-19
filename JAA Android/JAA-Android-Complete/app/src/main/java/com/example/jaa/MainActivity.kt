@@ -15,6 +15,8 @@ import com.example.jaa.model.Vehicle
 import com.example.jaa.ui.*
 import com.example.jaa.ui.theme.JAATheme
 import android.content.Context
+import com.example.jaa.network.RetrofitClient
+import com.example.jaa.model.VehiclesResponse
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,13 +26,23 @@ class MainActivity : ComponentActivity() {
         val prefs = getSharedPreferences("auth_prefs", Context.MODE_PRIVATE)
         val savedEmail = prefs.getString("user_email", null)
 
+        // State holders
+        val vehiclesState = mutableStateOf<List<Vehicle>>(emptyList())
+        val emailState = mutableStateOf("")
+        val customerIdState = mutableStateOf<Int?>(null)
+
+        // Fetch vehicles if user is already logged in
+        if (savedEmail != null) {
+            fetchVehiclesForUser(savedEmail) { vehicles, customerId ->
+                vehiclesState.value = vehicles
+                emailState.value = savedEmail
+                customerIdState.value = customerId
+            }
+        }
+
         setContent {
             JAATheme {
                 val navController = rememberNavController()
-                val vehiclesState = remember { mutableStateOf<List<Vehicle>>(emptyList()) }
-                val emailState = remember { mutableStateOf("") }
-                val customerIdState = remember { mutableStateOf<Int?>(null) }
-
                 var initialRoute by remember { mutableStateOf(if (savedEmail != null) "vehicles" else "login") }
 
                 // Handle initial intent (cold start)
@@ -91,6 +103,28 @@ class MainActivity : ComponentActivity() {
         super.onNewIntent(intent)
         setIntent(intent) // Updates the intent for Compose to observe
     }
+
+    private fun fetchVehiclesForUser(email: String, onResult: (List<Vehicle>, Int?) -> Unit) {
+        RetrofitClient.api.getVehiclesByEmail(email)
+            .enqueue(object : retrofit2.Callback<VehiclesResponse> {
+                override fun onResponse(
+                    call: retrofit2.Call<VehiclesResponse>,
+                    response: retrofit2.Response<VehiclesResponse>
+                ) {
+                    if (response.isSuccessful && response.body()?.success == true) {
+                        val vehicles = response.body()?.vehicles ?: emptyList()
+                        val customerId = vehicles.firstOrNull()?.customerId
+                        onResult(vehicles, customerId)
+                    } else {
+                        onResult(emptyList(), null)
+                    }
+                }
+                override fun onFailure(call: retrofit2.Call<VehiclesResponse>, t: Throwable) {
+                    onResult(emptyList(), null)
+                }
+            })
+    }
+
 
     private fun checkAndRequestNotificationPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
