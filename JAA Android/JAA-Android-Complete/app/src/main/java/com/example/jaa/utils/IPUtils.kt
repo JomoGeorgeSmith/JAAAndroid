@@ -7,7 +7,7 @@ object IPUtils {
         return if (Build.FINGERPRINT.contains("generic")) {
             "http://10.0.2.2:5001/"
         } else {
-            "http://192.168.1.25:5001/"
+            "http://192.168.1.249:5001/"
         }
     }
 }
